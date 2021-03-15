@@ -3,6 +3,7 @@ from datetime import timedelta
 import airflow
 from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
+from airflow.operators.python_operator import PythonOperator
 
 default_args = {
     'owner': 'etlers',
@@ -39,4 +40,20 @@ t2 = BashOperator(
     dag=dag,
 )
 
-t1 >> t2
+def print_fruit(fruit_name, **kwargs):
+    print('=' * 60)
+    print('fruit_name:', fruit_name)
+    print('=' * 60)
+    print(kwargs)
+    print('=' * 60)
+    return 'print complete!!!'
+
+t3 = PythonOperator(
+    task_id='print_result',
+    provide_context=True,
+    python_callable=print_fruit,
+    op_kwargs={'fruit_name': 'apple'},
+    dag=dag,
+)
+
+t1 >> [t2, t3]
