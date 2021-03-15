@@ -50,7 +50,6 @@ def print_fruit(fruit_name, **kwargs):
 
 t3 = PythonOperator(
     task_id='print_result',
-    provide_context=True,
     python_callable=print_fruit,
     op_kwargs={'fruit_name': 'apple'},
     dag=dag,
